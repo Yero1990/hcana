@@ -41,6 +41,12 @@ THcRaster::THcRaster( const char* name, const char* description,
   THaBeamDet(name,description,apparatus)
 {
 
+  Xbpm_SUM = 0.0;
+  Ybpm_SUM = 0.0;
+  Xbpm_AVG = 0.0;
+  Ybpm_AVG = 0.0;
+  counter = 0;
+
   fAnalyzePedestals = 0;
   fNPedestalEvents = 0;
   FRXA_rawadc = 0;
@@ -205,8 +211,8 @@ Int_t THcRaster::ReadDatabase( const TDatime& date )
  //
   //positions of BPMs relative to target (from Fall 2018 survey)
   fgbpma_zpos = 320.17;
-  fgbpmb_zpos = 224.81 ;// cm
-    fgbpmc_zpos = 129.38 ;// cm
+  fgbpmb_zpos = 224.81;// cm
+  fgbpmc_zpos = 129.38;// cm
   // Default offsets to zero and slopes to +/- 1
   fgbeam_xoff = -999.;
   fgbeam_xpoff =-999.;
@@ -574,7 +580,7 @@ Int_t THcRaster::Process(){
 
 
   if (fFlag_use_EPICS_bpm) {
-    fXbpm_tar= -xbeam; // assumes the BPM calibration gives BPM with +X beam left (HARP coordinate system)
+    fXbpm_tar= -xbeam; // assumes the BPM calibration gives BPM with +X beam left (HARP coordinate system)  "- sign" converts to EPICS coordinates
     fYbpm_tar= ybeam;
     fXpbpm_tar= -xpbeam; // assumes the BPM calibration gives BPM with +X beam left (HARP coordinate system)
     fYpbpm_tar= ypbeam;
@@ -624,6 +630,25 @@ Int_t THcRaster::Process(){
     fDirection.SetXYZ(tt, tp ,1.0); // Set arbitrarily to avoid run time warnings
     fDirection *= 1.0/TMath::Sqrt(1.0+tt*tt+tp*tp);
   }
+
+
+
+
+  //cout << "fXbpm_tar = " << fXbpm_tar << endl;
+  //cout << "fXbpm_tar = " << fYbpm_tar << endl;
+  Xbpm_SUM = Xbpm_SUM + fXbpm_tar;
+  Ybpm_SUM = Ybpm_SUM + fYbpm_tar;
+  //cout << Form("Xbpm_SUM = %f + %f = ", Xbpm_SUM, fXbpm_tar) <<  (double)Xbpm_SUM << endl;
+  //cout << "Ybpm_SUM = " <<  (double)Ybpm_SUM << endl;
+  //cout << "counter: " << counter << endl;
+  counter = counter + 1;
+  //cout << "X_bpm_AVG = " << Xbpm_SUM / (double)counter;
+  
+   Xbpm_AVG = Xbpm_SUM / (double)counter;
+   Ybpm_AVG = Ybpm_SUM / (double)counter;
+   
+
+
   /*  
   fXA_pos = fPosition[1](0);
   fYA_pos = fPosition[1](1);
@@ -642,7 +667,23 @@ Int_t THcRaster::Process(){
   return 0;
 }
 
-
+Int_t THcRaster::End(THaRunBase*)
+{
+  //Write the Average Beam Position Projected at the Target as a parameter
+  //BPM Average for HMS
+  if(strcmp(GetApparatus()->GetName(),"H.rb") == 0)
+    {
+      gHcParms->Define("h_XBPM_AVG","HMS X-BPM Average (cm)", Xbpm_AVG);
+      gHcParms->Define("h_YBPM_AVG","HMS Y-BPM Average (cm)", Ybpm_AVG);
+    }
+  
+  else{
+    //BPMS Average for SHMS
+    gHcParms->Define("p_XBPM_AVG","SHMS X-BPM Average (cm)", Xbpm_AVG);
+    gHcParms->Define("p_YBPM_AVG","SHMS Y-BPM Average (cm)", Ybpm_AVG);
+  }
+  return 0;
+}
 
 ClassImp(THcRaster)
 ////////////////////////////////////////////////////////////////////////////////

@@ -31,7 +31,8 @@ class THcRaster : public THaBeamDet, public THcHitList {
   void  Clear(Option_t* opt="");
   void    AccumulatePedestals(TClonesArray* rawhits);
   void    CalculatePedestals();
- 
+  virtual Int_t End( THaRunBase* r=0 );
+
   Int_t  Decode( const THaEvData& );
   Int_t  ReadDatabase( const TDatime& date );
   Int_t DefineVariables( EMode mode );
@@ -42,6 +43,7 @@ class THcRaster : public THaBeamDet, public THcHitList {
   void  DeleteArrays() { /* do nothing */;}
  
   Int_t Process();
+  void Get_Average();
 
   TVector3 GetPosition()  const { return fPosition[1]; }
   TVector3 GetDirection() const { return fDirection; }
@@ -133,6 +135,12 @@ class THcRaster : public THaBeamDet, public THcHitList {
   Double_t       fFrXB_ADC_zero_offset;
   Double_t       fFrYB_ADC_zero_offset;
 
+  Double_t Xbpm_SUM;
+  Double_t Ybpm_SUM;
+  
+  Double_t Xbpm_AVG;
+  Double_t Ybpm_AVG;
+  Int_t counter;
 
   Double_t       fPedADC[4];     // ADC poedestals
   //Double_t       fAvgPedADC[4];     // Avergage ADC poedestals
