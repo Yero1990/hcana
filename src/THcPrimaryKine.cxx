@@ -145,13 +145,21 @@ Int_t THcPrimaryKine::Process( const THaEvData& )
 
   THaTrackInfo* trkifo = fSpectro->GetTrackInfo();
   if( !trkifo || !trkifo->IsOK() ) return 1;
+ 
+
   // Determine 4-momentum of incident particle. 
   // If a beam module given, use it to get the beam momentum. This 
   // module may apply corrections for beam energy loss, variations, etc.
 
-  Double_t xptar = trkifo->GetTheta() + fOopCentralOffset;
-  TVector3 pvect;
-  fSpectro->TransportToLab(trkifo->GetP(), xptar, trkifo->GetPhi(), pvect);
+  TVector3 pvect; 
+
+  //ORIGINAL: INCORRECT (XPTAR, P, YPTAR) BEING TRANSPORTED TO LAB (C. YERO, 7/10/2020)
+  //Double_t xptar = trkifo->GetTheta() + fOopCentralOffset;
+  //fSpectro->TransportToLab(trkifo->GetP(), xptar, trkifo->GetPhi(), pvect);
+
+
+  //CORRECTED: Read the golden track variables to be transporte to lab (C. YERO, 7/10/2020)
+  theTrack = fSpectro->GetGoldenTrack();
 
   if( fBeam ) {
     fP0.SetVectM( fBeam->GetBeamInfo()->GetPvect(), fM );

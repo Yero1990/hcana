@@ -16,7 +16,7 @@ class THaBeamModule;
 typedef TLorentzVector FourVect;
 
 class THcPrimaryKine : public THaPhysicsModule {
-  
+
 public:
   THcPrimaryKine( const char* name, const char* description,
 		  const char* spectro = "",
@@ -26,7 +26,7 @@ public:
 		  const char* spectro, const char* beam,
 		  Double_t target_mass = 0.0 /* GeV */ );
   virtual ~THcPrimaryKine();
-  
+
   virtual void      Clear( Option_t* opt="" );
 
   Double_t          GetQ2()         const { return fQ2; }
@@ -40,14 +40,18 @@ public:
   Double_t          GetThetaQ()     const { return fThetaQ; }
   Double_t          GetPhiQ()       const { return fPhiQ; }
   Double_t          GetMass()       const { return fM; }
-  Double_t          GetTargetMass() const { return fMA; }
+  Double_t          GetTargetMass() const { return fMA; } 
 
   const FourVect*   GetP0()         const { return &fP0; }
   const FourVect*   GetP1()         const { return &fP1; }
   const FourVect*   GetA()          const { return &fA; }
   const FourVect*   GetA1()         const { return &fA1; }
-  const FourVect*   GetQ()          const { return &fQ; }
+  const FourVect*   GetQ()          const { return &fQ; } 
 
+  //C. Yero 7/10/2020 : declare pointer necessary to get golden track
+  THaTrack* theTrack;
+
+  
   virtual EStatus   Init( const TDatime& run_time );
   virtual Int_t     Process( const THaEvData& );
   virtual Int_t   ReadDatabase(const TDatime& date);
@@ -55,9 +59,16 @@ public:
           void      SetTargetMass( Double_t m );
           void      SetSpectrometer( const char* name );
           void      SetBeam( const char* name );
-
-protected:
-
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+ protected:
+	  
   Double_t          fQ2;           // 4-momentum transfer squared (GeV^2)
   Double_t          fOmega;        // Energy transfer (GeV)
   Double_t          fW2;           // s = Invariant mass using Mp (GeV^2)
