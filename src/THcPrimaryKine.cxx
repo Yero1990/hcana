@@ -158,9 +158,14 @@ Int_t THcPrimaryKine::Process( const THaEvData& )
   //fSpectro->TransportToLab(trkifo->GetP(), xptar, trkifo->GetPhi(), pvect);
 
 
-  //CORRECTED: Read the golden track variables to be transporte to lab (C. YERO, 7/10/2020)
-  theTrack = fSpectro->GetGoldenTrack();
+  //VERSION 1: Read the golden track variables to be transporte to lab (C. YERO, 7/10/2020)
+  fSpectro->TransportToLab(trkifo->GetP(), trkifo->GetTTheta(), trkifo->GetTPhi(), pvect);
 
+  //VERSION 2: 
+  //theTrack = fSpectro->GetGoldenTrack();
+  //fSpectro->TransportToLab(theTrack->GetP(), theTrack->GetTTheta(), theTrack->GetTPhi(), pvect);
+  
+  
   if( fBeam ) {
     fP0.SetVectM( fBeam->GetBeamInfo()->GetPvect(), fM );
   } else {
