@@ -48,9 +48,6 @@ public:
   const FourVect*   GetA1()         const { return &fA1; }
   const FourVect*   GetQ()          const { return &fQ; } 
 
-  //C. Yero 7/10/2020 : declare pointer necessary to get golden track
-  THaTrack* theTrack;
-
   
   virtual EStatus   Init( const TDatime& run_time );
   virtual Int_t     Process( const THaEvData& );

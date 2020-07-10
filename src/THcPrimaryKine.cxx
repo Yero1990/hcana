@@ -5,6 +5,7 @@
 These are usually the electron kinematics.
 */
 
+#include "THaTrack.h"  
 #include "THcPrimaryKine.h"
 #include "THcHallCSpectrometer.h"
 #include "THcGlobals.h"
@@ -157,13 +158,9 @@ Int_t THcPrimaryKine::Process( const THaEvData& )
   //Double_t xptar = trkifo->GetTheta() + fOopCentralOffset;
   //fSpectro->TransportToLab(trkifo->GetP(), xptar, trkifo->GetPhi(), pvect);
 
-
-  //VERSION 1: Read the golden track variables to be transporte to lab (C. YERO, 7/10/2020)
-  fSpectro->TransportToLab(trkifo->GetP(), trkifo->GetTTheta(), trkifo->GetTPhi(), pvect);
-
-  //VERSION 2: 
-  //theTrack = fSpectro->GetGoldenTrack();
-  //fSpectro->TransportToLab(theTrack->GetP(), theTrack->GetTTheta(), theTrack->GetTPhi(), pvect);
+  //GOLDENTRACK: 
+  THaTrack* theTrack = fSpectro->GetGoldenTrack();
+  fSpectro->TransportToLab(theTrack->GetP(), theTrack->GetTTheta(), theTrack->GetTPhi(), pvect);
   
   
   if( fBeam ) {
