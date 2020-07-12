@@ -156,18 +156,24 @@ Int_t THcSecondaryKine::Process( const THaEvData& )
   //Get secondary particle mass
   //fMX = dynamic_cast <THcHallCSpectrometer*> (fSpectro)->GetParticleMass();
 
-  // Tracking information from the secondary spectrometer
-  THaTrackInfo* trkifo = fSpectro->GetTrackInfo();
-  if( !trkifo || !trkifo->IsOK() ) return 1;
-
   // Require valid input data
   if( !fPrimary->DataValid() ) return 2;
 
-  // Measured momentum of secondary particle X in lab
-  Double_t xptar = trkifo->GetTheta() + fOopCentralOffset;
-  TVector3 pvect;
-  fSpectro->TransportToLab(trkifo->GetP(), xptar, trkifo->GetPhi(), pvect);
+  //Tracking information from the secondary spectrometer
+  THaTrackInfo* trkifo = fSpectro->GetTrackInfo();
+  if( !trkifo || !trkifo->IsOK() ) return 1;
 
+  TVector3 pvect;
+
+  //Measured momentum of secondary particle X in lab
+  //Double_t xptar = trkifo->GetTheta() + fOopCentralOffset;
+  //fSpectro->TransportToLab(trkifo->GetP(), xptar, trkifo->GetPhi(), pvect);
+
+  //GOLDENTRACK: 
+  THaTrack* theTrack = fSpectro->GetGoldenTrack();
+  fSpectro->TransportToLab(theTrack->GetP(), theTrack->GetTTheta(), theTrack->GetTPhi(), pvect);
+  
+  
   // 4-momentum of X
   fX.SetVectM( pvect, fMX );
 
