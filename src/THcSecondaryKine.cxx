@@ -4,6 +4,7 @@
 \brief Class for the Calculate kinematics of scattering of the secondary (hadron) particle.
 */
 
+#include "THaTrack.h"  
 #include "THcSecondaryKine.h"
 #include "THcPrimaryKine.h"
 #include "THcHallCSpectrometer.h"
@@ -169,7 +170,7 @@ Int_t THcSecondaryKine::Process( const THaEvData& )
   //Double_t xptar = trkifo->GetTheta() + fOopCentralOffset;
   //fSpectro->TransportToLab(trkifo->GetP(), xptar, trkifo->GetPhi(), pvect);
 
-  //GOLDENTRACK: 
+  //GOLDENTRACK: Implemented correct method to get the golden tracks and transport them to Lab system (C. Yero, 7/12/2020)
   THaTrack* theTrack = fSpectro->GetGoldenTrack();
   fSpectro->TransportToLab(theTrack->GetP(), theTrack->GetTTheta(), theTrack->GetTPhi(), pvect);
   
