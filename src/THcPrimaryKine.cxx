@@ -154,13 +154,14 @@ Int_t THcPrimaryKine::Process( const THaEvData& )
 
   TVector3 pvect; 
 
-  //ORIGINAL: INCORRECT (XPTAR, P, YPTAR) BEING TRANSPORTED TO LAB (C. YERO, 7/10/2020)
+  //ORIGINAL: INCORRECT (XPTAR, P, YPTAR) BEING TRANSPORTED TO LAB (C. Yero, 7/10/2020)
   //Double_t xptar = trkifo->GetTheta() + fOopCentralOffset;
   //fSpectro->TransportToLab(trkifo->GetP(), xptar, trkifo->GetPhi(), pvect);
 
   //GOLDENTRACK: Implemented correct method to get the golden tracks and transport them to Lab system (C. Yero, 7/12/2020)
   THaTrack* theTrack = fSpectro->GetGoldenTrack();
-  fSpectro->TransportToLab(theTrack->GetP(), theTrack->GetTTheta(), theTrack->GetTPhi(), pvect);
+  Double_t xptar = theTrack->GetTTheta() + fOopCentralOffset;  //Get Golden X'tar track (in spec. or transport coord. system and apply out-of-plane offset [rad])
+  fSpectro->TransportToLab(theTrack->GetP(), xptar, theTrack->GetTPhi(), pvect);
   
   
   if( fBeam ) {
